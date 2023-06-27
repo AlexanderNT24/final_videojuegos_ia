@@ -60,9 +60,9 @@ class AnalisisFacial:
                 rotacion="rotacion_derecha"   
 
         if self.longitudBoca<=8:
-            mouthIsClose=True
+            mouthIsClose=False
         elif self.longitudBoca>8:
-            mouthIsClose=False  
+            mouthIsClose=True
  
         if self.longitudOjoIzquierdo<=10:
             leftEyeIsClose=True
@@ -75,6 +75,6 @@ class AnalisisFacial:
              rightEyeIsClose=False
 
      
-        return f'{"jump" if (leftEyeIsClose and rightEyeIsClose) else "none"}'
+        return f'{"jump" if mouthIsClose else "none"}',f'{"fire" if (leftEyeIsClose and rightEyeIsClose) else "none"}'
 
 

@@ -19,7 +19,6 @@ def main():
     analize_video(capture,mediap_draw_points,draw_points,mediap_face_mesh,face_mesh) 
 
 def detect_hand_raised(hand_landmarks):
-    # Obtiene las coordenadas de la muñeca y las puntas de los dedos de la mano derecha e izquierda
     wrist_left = hand_landmarks.landmark[mp.solutions.hands.HandLandmark.WRIST].x
     wrist_right = hand_landmarks.landmark[mp.solutions.hands.HandLandmark.WRIST].x
     thumb_tip_left = hand_landmarks.landmark[mp.solutions.hands.HandLandmark.THUMB_TIP].y
@@ -32,7 +31,7 @@ def detect_hand_raised(hand_landmarks):
     elif wrist_right > index_finger_tip_right and wrist_right > thumb_tip_right:
         return 'left'
     else:
-        return 'none'  
+        return 'none'
      
 def analize_video(capture,mediap_draw_points,draw_points,mediap_face_mesh,face_mesh):
     estate_array=[]
@@ -62,10 +61,14 @@ def analize_video(capture,mediap_draw_points,draw_points,mediap_face_mesh,face_m
                                           landmark_drawing_spec=mp_drawing.DrawingSpec(color=landmark_color, thickness=2,
                                                                                          circle_radius=3),
                                           connection_drawing_spec=mp_drawing.DrawingSpec(color=connection_color, thickness=2))
-                data_to_send = detect_hand_raised(hand_landmarks)
-                f = open ('file_hands.txt','w')
-                f.write(data_to_send)
-                f.close()
+                data_to_send_move = detect_hand_raised(hand_landmarks)
+                file = open ('file_move.txt','w')
+                file.write(data_to_send_move)
+                file.close()
+        else:
+            file = open ('file_move.txt','w')
+            file.write('none')
+            file.close()      
         #Si encuentra un rostro        
         if results.multi_face_landmarks:
             #Para todos los rostros detectados
@@ -84,10 +87,13 @@ def analize_video(capture,mediap_draw_points,draw_points,mediap_face_mesh,face_m
                     if len(listaPuntosFaciales)==468:
                         facial_analysis_object=AnalisisFacial(listaPuntosFaciales,altoVentana,anchoVentana)
                         show_rotation_axes(listaPuntosFaciales,frame,altoVentana)
-                        data_to_send=facial_analysis_object.getLongitudes()
-                        f = open ('file_face.txt','w')
-                        f.write(data_to_send)
-                        f.close()
+                        data_to_send_jump,data_to_send_fire=facial_analysis_object.getLongitudes()
+                        file_jump = open ('file_jump.txt','w')
+                        file_jump.write(data_to_send_jump)
+                        file_jump.close()
+                        file_fire = open ('file_fire.txt','w')
+                        file_fire.write(data_to_send_fire)
+                        file_fire.close()
 
                         time.sleep(0.1)    
         cv2.imshow('Controller VideoGame', frame)                  
