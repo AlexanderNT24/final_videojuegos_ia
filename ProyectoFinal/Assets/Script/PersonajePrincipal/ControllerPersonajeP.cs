@@ -22,6 +22,8 @@ public class ControllerPersonajeP : MonoBehaviour
     private AudioSource audioSource;
     private float tiempoUltimoDisparo; // Variable para almacenar el tiempo del último disparo
     public float tiempoEntreDisparos = 1f; // Tiempo mínimo entre cada disparo en segundos
+    private float tiempoUltimoSalto; // Variable para almacenar el tiempo del último disparo
+    public float tiempoEntreSalto = 1f; // Tiempo mínimo entre cada disparo en segundos
 
 
 
@@ -184,9 +186,13 @@ public class ControllerPersonajeP : MonoBehaviour
 
     void Saltar()
     {
-        currentAnimation = 3;
-        rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
-        audioSource.PlayOneShot(audios[0], 5);
+        if (Time.time - tiempoUltimoSalto >= tiempoEntreSalto)
+        {
+            currentAnimation = 3;
+            rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
+            audioSource.PlayOneShot(audios[0], 5);
+        }
+
     }
 
     void Disparar()
