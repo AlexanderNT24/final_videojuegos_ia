@@ -3,6 +3,7 @@ import mediapipe as mp #Google
 import time
 import matplotlib.pyplot as plt
 import numpy as np
+import threading
 
 from Captura import Captura
 from MallaFacial import MallaFacial
@@ -27,12 +28,23 @@ def detect_hand_raised(hand_landmarks):
     index_finger_tip_right = hand_landmarks.landmark[mp.solutions.hands.HandLandmark.INDEX_FINGER_TIP].y
 
     if wrist_left < index_finger_tip_left and wrist_left < thumb_tip_left:
-        return 'right'
-    elif wrist_right > index_finger_tip_right and wrist_right > thumb_tip_right:
         return 'left'
+    elif wrist_right > index_finger_tip_right and wrist_right > thumb_tip_right:
+        return 'right'
     else:
         return 'none'
-     
+
+def write_file(file_path,data):
+    try: 
+        lock = threading.Lock()
+        with lock:
+            with open(file_path, 'w') as file:
+                file.write(data)
+        print('Escribiendo')        
+    except:
+        print('Error')
+
+
 def analize_video(capture,mediap_draw_points,draw_points,mediap_face_mesh,face_mesh):
     estate_array=[]
     show_mesh=False
@@ -62,9 +74,8 @@ def analize_video(capture,mediap_draw_points,draw_points,mediap_face_mesh,face_m
                                                                                          circle_radius=3),
                                           connection_drawing_spec=mp_drawing.DrawingSpec(color=connection_color, thickness=2))
                 data_to_send_move = detect_hand_raised(hand_landmarks)
-                file = open ('file_move.txt','w')
-                file.write(data_to_send_move)
-                file.close()
+                write_file('file_move.txt',data_to_send_move)
+
         else:
             file = open ('file_move.txt','w')
             file.write('none')
@@ -88,12 +99,8 @@ def analize_video(capture,mediap_draw_points,draw_points,mediap_face_mesh,face_m
                         facial_analysis_object=AnalisisFacial(listaPuntosFaciales,altoVentana,anchoVentana)
                         show_rotation_axes(listaPuntosFaciales,frame,altoVentana)
                         data_to_send_jump,data_to_send_fire=facial_analysis_object.getLongitudes()
-                        file_jump = open ('file_jump.txt','w')
-                        file_jump.write(data_to_send_jump)
-                        file_jump.close()
-                        file_fire = open ('file_fire.txt','w')
-                        file_fire.write(data_to_send_fire)
-                        file_fire.close()
+                        write_file('file_jump.txt',data_to_send_jump)
+                        write_file('file_fire.txt',data_to_send_fire)
 
                         time.sleep(0.1)    
         cv2.imshow('Controller VideoGame', frame)                  
@@ -102,7 +109,10 @@ def analize_video(capture,mediap_draw_points,draw_points,mediap_face_mesh,face_m
         if key==27:
             break
     #Destruimos cada ventana creada por opencv 
-    cv2.destroyAllWindows() 
+    cv2.destroyAllWindows()
+    write_file('file_move.txt','none')
+    write_file('file_jump.txt','none')
+    write_file('file_fire.txt','none')
 
                
 

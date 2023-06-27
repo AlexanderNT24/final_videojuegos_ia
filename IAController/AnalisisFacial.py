@@ -51,13 +51,13 @@ class AnalisisFacial:
         coordenadaCentralX,coordenadaCentralY=self.listaPuntosFaciales[9][1:]
         coordenadaQuijadaX,coordenadaQuijadaY=self.listaPuntosFaciales[152][1:]
         eje=self.altoVentana-coordenadaCentralY
-        rotacion="rotacion_nula"
+        isRotate=False 
         if (coordenadaCentralX-coordenadaQuijadaX)!=0:
             pendiente=(coordenadaCentralY-coordenadaQuijadaY)/(coordenadaCentralX-coordenadaQuijadaX)  
             if pendiente<-0.1 and pendiente>-4:
-                rotacion="rotacion_izquierda"
+                isRotate=True
             elif pendiente>0.1 and pendiente<4:
-                rotacion="rotacion_derecha"   
+                isRotate=True  
 
         if self.longitudBoca<=8:
             mouthIsClose=False
@@ -75,6 +75,6 @@ class AnalisisFacial:
              rightEyeIsClose=False
 
      
-        return f'{"jump" if mouthIsClose else "none"}',f'{"fire" if (leftEyeIsClose and rightEyeIsClose) else "none"}'
+        return f'{"jump" if mouthIsClose else "none"}',f'{"fire" if isRotate else "none"}'
 
 
