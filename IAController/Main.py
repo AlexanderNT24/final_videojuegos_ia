@@ -77,9 +77,8 @@ def analize_video(capture,mediap_draw_points,draw_points,mediap_face_mesh,face_m
                 write_file('file_move.txt',data_to_send_move)
 
         else:
-            file = open ('file_move.txt','w')
-            file.write('none')
-            file.close()      
+            write_file('file_move.txt','none')
+    
         #Si encuentra un rostro        
         if results.multi_face_landmarks:
             #Para todos los rostros detectados
